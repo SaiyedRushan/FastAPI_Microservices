@@ -41,7 +41,7 @@ def get(pk: str):
 @app.post('/orders')
 async def create(request: Request, background_tasks: BackgroundTasks):  
     body = await request.json()
-    req = requests.get(f'{os.environ.get("INVENTORY_SERVICE_URL")}/{body['id']}')
+    req = requests.get(f"{os.environ.get('INVENTORY_SERVICE_URL')}/{body['id']}")
     product = req.json()
 
     order = Order(
