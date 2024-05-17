@@ -1,10 +1,18 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from redis_om import get_redis_connection, HashModel
 from dotenv import load_dotenv
 import os
 
 load_dotenv()
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=os.environ.get("ALLOWED_ORIGINS"),
+    allow_methods=['*'],
+    allow_headers=['*']
+)
 
 redis = get_redis_connection(
     host=os.environ.get("REDIS_HOST"),
@@ -34,7 +42,7 @@ def format(pk: str):
 
 @app.get('/products')
 def all():
-    return Product.all_pks()
+    return [format(pk) for pk in Product.all_pks()]
 
 @app.post('/products')
 def create(product: Product):
